@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files
+.env
+backend/.env
+
+# Build output
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Excel/data files (optional - remove if you want them in repo)
+backend/*.xlsx
+backend/*.xls
