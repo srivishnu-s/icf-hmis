@@ -108,6 +108,7 @@ router.get('/employees', authenticateToken, async (req, res) => {
     if (await isDbAvailable()) {
       const [rows] = await pool.execute(`
         SELECT 
+          r.record_id,
           e.EMISCARDNUMBER,
           e.emp_name,
           e.designation,
@@ -119,8 +120,8 @@ router.get('/employees', authenticateToken, async (req, res) => {
           r.diagnosis,
           r.reporting_doctor,
           r.hospital_name
-        FROM employees e
-        JOIN sick_fit_records r ON e.EMISCARDNUMBER = r.EMISCARDNUMBER
+        FROM sick_fit_records r
+        JOIN employees e ON e.EMISCARDNUMBER = r.EMISCARDNUMBER
         WHERE e.shop_code = ?
         ORDER BY r.status DESC, r.sick_date DESC
       `, [shop_code]);

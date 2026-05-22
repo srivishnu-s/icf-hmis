@@ -22,7 +22,16 @@ const SSEPerformanceChart = ({ data = [], loading }) => {
     setEmpLoading(true);
     try {
       const res = await api.get(`/sse-monitoring/employees?shop_code=${shopCode}`);
-      setEmployees(res.data.data || []);
+      // Deduplicate by record_id to prevent duplicate cards
+      const raw = res.data.data || [];
+      const seen = new Set();
+      const unique = raw.filter(emp => {
+        const key = emp.record_id || `${emp.EMISCARDNUMBER}-${emp.sick_date}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      setEmployees(unique);
     } catch (e) {
       console.error(e);
     } finally {
@@ -96,7 +105,7 @@ const SSEPerformanceChart = ({ data = [], loading }) => {
                             No sick/fit records registered under this shop.
                           </div>
                         ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+                          <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-1">
                             {employees.map((emp, index) => (
                               <div 
                                 key={index} 
